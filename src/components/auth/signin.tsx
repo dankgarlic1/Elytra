@@ -1,6 +1,7 @@
-import SignupButtons from "../SignUpButtons";
-import { TopLeftShine, TopRightShine } from "../ui/Shine";
+import SignupButtons from '../SignUpButtons';
+import { TopLeftShine, TopRightShine } from '../ui/Shine';
 import EmailSignIn from '@/app/auth/signin/_components/EmailSignIn';
+import Image from 'next/image';
 
 export default function SignIn() {
   return (
@@ -34,10 +35,24 @@ export default function SignIn() {
           <div className="mr-2 h-6 w-6" />
           Elytra Inc
         </div>
+        {/* Image Container */}
+        <div className="relative z-20 mt-auto flex space-x-6 justify-center items-center">
+          <div className=" flex justify-center">
+            <Image
+              src="/human.png"
+              alt="Programmer Recommendation"
+              width={300}
+              height={300}
+              className="rounded-lg shadow-lg object-contain w-full h-auto"
+            />
+          </div>
+        </div>
         <div className="relative z-20 mt-auto">
           <blockquote className="space-y-2">
             <p className="text-lg">
-              &ldquo;This platform has saved me countless hours of work and helped me deliver stunning designs to my clients faster than ever before.&rdquo;
+              &ldquo;This platform has saved me countless hours of work and
+              helped me deliver stunning designs to my clients faster than ever
+              before.&rdquo;
             </p>
             <footer className="text-sm">Sofia Davis</footer>
           </blockquote>
