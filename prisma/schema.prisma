@@ -1,0 +1,131 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                    String    @id @default(cuid())
+  name                  String?
+  email                 String    @unique
+  username              String?
+  password              String?
+  emailVerified         DateTime?
+  image                 String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  phone                 String?
+  age                   Int?
+  nationality           String?
+  previousDegree        String?
+  grades                String?
+  currentEducationLevel String?
+  preferredCountries    String?
+  preferredPrograms     String?
+  careerAspirations     String?
+  visaQuestions         String?
+  filledApplication     Boolean?  @default(false)
+  plan                  Plan?     @default(FREE)
+  totalTimeUsed         Int?      @default(0)
+  sessions              Session[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  createdAt DateTime @default(now())
+  summary   String?
+  updatedAt DateTime @updatedAt
+  duration  Int?     @default(0)
+  chats     Chat[]
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Chat {
+  id        String      @id @default(cuid())
+  sessionId String
+  message   String
+  createdAt DateTime    @default(now())
+  sender    SenderType?
+  session   Session     @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+}
+
+model Program {
+  id                        Int       @id @default(autoincrement())
+  name                      String
+  description               String?
+  mode                      String?
+  duration                  String?
+  category                  String?
+  fees                      String?
+  createdAt                 DateTime? @default(now())
+  updatedAt                 DateTime? @default(now())
+  coOpInternship            String?
+  college                   String?
+  curriculum                String?
+  location                  String?
+  publicPrivate             String?
+  ranking                   String?
+  specialLocationFeatures   String?
+  specialUniversityFeatures String?
+  specialization            String?
+  university                String
+  usp                       String?
+  eligibility               Json
+  canFinishIn               String?
+  creditsInIITIIM           String?
+  creditsInUS               String?
+  gloveraPricing            String?
+  iitIim                    String?
+  originalPricing           String?
+  savings                   String?
+  savingsPercentage         String?
+  totalCredits              String?
+  applicationFee            String?
+  deposit                   String?
+  depositRefundableVisa     String?
+  interviews                String?
+  keyCompaniesHiring        String?
+  keyJobRoles               String?
+  lor                       String?
+  quantQualitative          String?
+  sop                       String?
+  transcriptEvaluation      String?
+}
+
+model Eligibility {
+  id                     Int      @id @default(autoincrement())
+  university             String
+  program                String
+  typeOfProgram          String?
+  percentage             String?
+  backlogs               String?
+  workExperience         String?
+  allow3YearDegree       String?
+  minimumGpaOrPercentage String?
+  decisionFactor         String?
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+enum Plan {
+  FREE
+  PRO
+  ENTERPRISE
+}
+
+enum SenderType {
+  AI
+  USER
+}
