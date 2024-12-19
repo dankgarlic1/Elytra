@@ -92,7 +92,9 @@ export default function AICounselingChatbot({ user }: { user: User }) {
         <Modal
           isOpen={isAPIKeyModalOpen}
           onOpenChange={setIsAPIKeyModalOpen}
+          hideCloseButton={true}
           isDismissable={false}
+          className="max-w-sm mx-auto"
         >
           <ModalContent className="bg-opacity-90 dark:bg-black bg-red-500	 rounded-xl">
             <ModalHeader>Enter Heygen API Key</ModalHeader>
@@ -106,6 +108,7 @@ export default function AICounselingChatbot({ user }: { user: User }) {
                 onValueChange={setHeygenAPIKey}
                 errorMessage={apiKeyError}
                 isInvalid={!!apiKeyError}
+                className="resize-none h-24  "
               />
               <div className="text-xs text-gray-500">
                 <p>🔒 Your API key will be stored locally and not shared.</p>
@@ -305,13 +308,14 @@ export default function AICounselingChatbot({ user }: { user: User }) {
                   <ul className="flex space-x-4">
                     {additionalContext.suggestedQuestions.map(
                       (question, index) => (
-                        <li
-                          key={index}
-                          className="flex-none bg-[#7C3AED] rounded-2xl shadow-lg text-white p-2 px-4"
-                          onClick={() => handleSpeak(question)}
-                        >
-                          <div>{question}</div>
-                        </li>
+                        // <li
+                        //   key={index}
+                        //   className="flex-none bg-[#7C3AED] rounded-2xl shadow-lg text-white p-2 px-4"
+                        //   onClick={() => handleSpeak(question)}
+                        // >
+                        //   <div>{question}</div>
+                        // </li>
+                        <div></div>
                       )
                     )}
                   </ul>
