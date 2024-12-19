@@ -1,19 +1,25 @@
-import React from 'react'
-import { Button } from './ui/button'
-import { signOut } from 'next-auth/react'
-import { IconLogout } from '@tabler/icons-react'
+import { useSession, signOut } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { Button } from './ui/button';
+import { IconLogout } from '@tabler/icons-react';
 
 const LogoutButton = () => {
-    return (
-        <Button onClick={() => signOut()} className="rounded-xl gap-4 text-white">
-            <div>
-                <IconLogout />
-            </div>
-            <div>
-                Logout
-            </div>
-        </Button>
-    )
-}
+  const { data: session } = useSession();
+  const router = useRouter();
 
-export default LogoutButton
+  if (!session) return null; // No session means already logged out
+
+  return (
+    <Button
+      onClick={() => signOut({ redirect: false }).then(() => router.push('/'))}
+      className="rounded-xl gap-4 text-white"
+    >
+      <div>
+        <IconLogout />
+      </div>
+      <div>Logout</div>
+    </Button>
+  );
+};
+
+export default LogoutButton;
