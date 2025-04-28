@@ -1,6 +1,6 @@
-import prisma from "@/lib/prisma";
-import { getUserDetails } from "@/utils";
-import { NextResponse } from "next/server";
+import prisma from '@/lib/prisma';
+import { getUserDetails } from '@/utils';
+import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
@@ -12,7 +12,7 @@ export async function GET() {
 
     const userSessions = await prisma.session.findMany({
       where: {
-        userId: session.user.id, 
+        userId: session.user.id,
       },
       select: {
         id: true,
@@ -28,12 +28,14 @@ export async function GET() {
         },
       },
     });
-    console.log(userSessions)
 
     return NextResponse.json({ success: true, data: userSessions });
   } catch (error) {
-    console.error("Error fetching user sessions:", error);
-    return NextResponse.json({ success: false, error: "Failed to fetch user sessions" });
+    console.error('Error fetching user sessions:', error);
+    return NextResponse.json({
+      success: false,
+      error: 'Failed to fetch user sessions',
+    });
   } finally {
     await prisma.$disconnect();
   }

@@ -5,14 +5,17 @@ export async function POST(req: NextRequest) {
   try {
     // Parse the request body
     const body = await req.json();
-    console.log(body)
+    console.log(body);
     const { email, counselorName, date, time, meetingType } = body;
 
     if (!email || !counselorName || !date || !time || !meetingType) {
-      return NextResponse.json({ message: 'Missing required fields' }, { status: 400 });
+      return NextResponse.json(
+        { message: 'Missing required fields' },
+        { status: 400 }
+      );
     }
 
-    console.log('Email:', email);
+    // console.log('Email:', email);
 
     // Set up Nodemailer transporter
     const transporter = nodemailer.createTransport({
@@ -47,7 +50,10 @@ export async function POST(req: NextRequest) {
     // Send email
     await transporter.sendMail(mailOptions);
 
-    return NextResponse.json({ message: 'Email sent successfully' }, { status: 200 });
+    return NextResponse.json(
+      { message: 'Email sent successfully' },
+      { status: 200 }
+    );
   } catch (error) {
     console.error('Error sending email:', error);
     return NextResponse.json(
@@ -55,4 +61,4 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     );
   }
-};
+}

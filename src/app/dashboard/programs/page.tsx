@@ -32,7 +32,7 @@ const Page = () => {
 
   // Auto scroll to bottom when new messages arrive
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   useEffect(() => {
@@ -42,9 +42,25 @@ const Page = () => {
   const sendMessage = async () => {
     if (!input.trim()) return;
 
+    // Add user message immediately
+    const userMessage: Message = { role: 'user', content: input };
+    setMessages((prev) => [...prev, userMessage]);
+
+    // Add loading message
+    const loadingMessage: Message = {
+      role: 'assistant',
+      content: 'Thinking...',
+    };
+    setMessages((prev) => [...prev, loadingMessage]);
+
+    // Clear input
+    const userInput = input;
+    setInput('');
+    setIsStreaming(true);
+
     try {
-      console.log('Getting embeddings for query:', input);
-      const embeddingResult = await model.embedContent(input);
+      console.log('Getting embeddings for query:', userInput);
+      const embeddingResult = await model.embedContent(userInput);
       const embeddingVector = embeddingResult.embedding.values;
       console.log('Got embeddings, vector length:', embeddingVector.length);
 
@@ -98,11 +114,8 @@ Relevance Score: ${match.score ? Math.round(match.score * 100) / 100 : 'Not avai
         console.log('Formatted contexts:', contexts);
         setUsedContexts(contexts);
 
-        const userMessage: Message = { role: 'user', content: input };
-        setMessages(prev => [...prev, userMessage]);
-
         const botMessage: Message = { role: 'assistant', content: '' };
-        setMessages(prev => [...prev, botMessage]);
+        setMessages((prev) => [...prev, botMessage]);
         setIsStreaming(true);
 
         console.log('Sending to chat API...');
@@ -110,12 +123,12 @@ Relevance Score: ${match.score ? Math.round(match.score * 100) / 100 : 'Not avai
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            message: input,
+            message: userInput,
             contexts: contexts,
             metadata: {
               totalResults: searchResults.matches.length,
               queryType: 'program_search',
-            }
+            },
           }),
         });
 
@@ -127,18 +140,30 @@ Relevance Score: ${match.score ? Math.round(match.score * 100) / 100 : 'Not avai
           throw new Error('No response body');
         }
 
+        // Remove the loading message and add an empty response message
+        setMessages((prev) => {
+          const newMessages = [...prev];
+          newMessages.pop(); // Remove the "Thinking..." message
+          newMessages.push({ role: 'assistant', content: '' }); // Add empty response message
+          return newMessages;
+        });
+
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
+        let accumulatedContent = '';
 
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
 
           const chunk = decoder.decode(value, { stream: true });
-          setMessages(prev =>
+          accumulatedContent += chunk;
+
+          // Update the last message with accumulated content
+          setMessages((prev) =>
             prev.map((msg, idx) =>
               idx === prev.length - 1
-                ? { ...msg, content: msg.content + chunk }
+                ? { ...msg, content: accumulatedContent }
                 : msg
             )
           );
@@ -146,27 +171,32 @@ Relevance Score: ${match.score ? Math.round(match.score * 100) / 100 : 'Not avai
       } catch (error) {
         console.error('Error searching Pinecone:', error);
         toast.error('An error occurred while searching Pinecone');
-        setMessages(prev =>
-          prev.map((msg, idx) =>
-            idx === prev.length - 1
-              ? { ...msg, content: 'Sorry, there was an error searching Pinecone.' }
-              : msg
-          )
-        );
+        // Replace the loading message with error message
+        setMessages((prev) => {
+          const newMessages = [...prev];
+          newMessages.pop(); // Remove the "Thinking..." message
+          newMessages.push({
+            role: 'assistant',
+            content: 'Sorry, there was an error searching Pinecone.',
+          });
+          return newMessages;
+        });
       }
     } catch (error) {
       console.error('Error:', error);
       toast.error('An error occurred while processing your request');
-      setMessages(prev =>
-        prev.map((msg, idx) =>
-          idx === prev.length - 1
-            ? { ...msg, content: 'Sorry, there was an error processing your request.' }
-            : msg
-        )
-      );
+      // Replace the loading message with error message
+      setMessages((prev) => {
+        const newMessages = [...prev];
+        newMessages.pop(); // Remove the "Thinking..." message
+        newMessages.push({
+          role: 'assistant',
+          content: 'Sorry, there was an error processing your request.',
+        });
+        return newMessages;
+      });
     }
 
-    setInput('');
     setIsStreaming(false);
   };
 
@@ -216,14 +246,14 @@ Relevance Score: ${match.score ? Math.round(match.score * 100) / 100 : 'Not avai
             {messages?.map((message, index) => (
               <div
                 key={index}
-                className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'
-                  }`}
+                className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={`flex gap-2 max-w-[80%] ${message.role === 'user'
+                  className={`flex gap-2 max-w-[80%] ${
+                    message.role === 'user'
                       ? 'flex-row-reverse items-end'
                       : 'flex-row'
-                    }`}
+                  }`}
                 >
                   {/* Avatar */}
                   <Avatar className="w-8 h-8">
@@ -234,12 +264,26 @@ Relevance Score: ${match.score ? Math.round(match.score * 100) / 100 : 'Not avai
 
                   {/* Message Content */}
                   <div
-                    className={`rounded-lg px-4 py-2 text-sm ${message.role === 'user'
+                    className={`rounded-lg px-4 py-2 text-sm ${
+                      message.role === 'user'
                         ? 'bg-primary text-primary-foreground'
                         : 'bg-muted text-muted-foreground'
-                      }`}
+                    }`}
                   >
-                    {message.role === 'assistant' ? (
+                    {message.role === 'assistant' &&
+                    message.content === 'Thinking...' ? (
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" />
+                        <div
+                          className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                          style={{ animationDelay: '0.2s' }}
+                        />
+                        <div
+                          className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                          style={{ animationDelay: '0.4s' }}
+                        />
+                      </div>
+                    ) : (
                       <div
                         className="prose prose-sm max-w-none"
                         dangerouslySetInnerHTML={{
@@ -247,58 +291,43 @@ Relevance Score: ${match.score ? Math.round(match.score * 100) / 100 : 'Not avai
                             ?.replace(/\n\n/g, '</p><p>')
                             .replace(/\n/g, '<br/>')
                             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                            .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                            .replace(/- (.*?)(?=\n|$)/g, '<li>$1</li>')
-                            .replace(/((?:<li>.*?<\/li>\n*)+)/g, '<ul>$1</ul>')
-                            .replace(/^(.*?)(?=<|$)/g, '<p>$1</p>'),
+                            .replace(/\*(.*?)\*/g, '<em>$1</em>'),
                         }}
                       />
-                    ) : (
-                      <p className="whitespace-pre-wrap">
-                        {message.content || ''}
-                      </p>
                     )}
                   </div>
                 </div>
               </div>
             ))}
-            {/* Scroll to Bottom */}
             <div ref={messagesEndRef} />
           </div>
         </ScrollArea>
 
-        {/* Input Area */}
-        <div className="border dark:border-[#3A3F4B] border-[#E9ECF1] bg-background dark:bg-[#222939] shadow-md rounded-xl m-4">
-          <div className="flex items-center gap-2 max-w-[1200px] mx-auto p-2">
-            <div className="relative flex-1">
-              <Input
-                placeholder="Type your question about program recommendations..."
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) =>
-                  e.key === 'Enter' && !isStreaming && sendMessage()
+        {/* Input Section */}
+        <div className="border-t dark:border-[#293040] border-[#E9ECF1] p-4">
+          <div className="flex gap-2">
+            <Input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  sendMessage();
                 }
-                className="w-full pr-12 pl-4 py-3 text-sm rounded-md border border-neutral-300 outline-none border-none dark:bg-[#222939] dark:text-white"
-                disabled={isStreaming}
-              />
-              {/* Send Button Inside the Input */}
-              <Button
-                onClick={sendMessage}
-                size="icon"
-                disabled={isStreaming}
-                aria-label="Send message"
-                className="absolute right-2 top-1/2 transform -translate-y-1/2    text-white rounded-xl"
-              >
-                {isStreaming ? (
-                  <span className="text-sm animate-pulse">...</span>
-                ) : (
-                  <Send className="w-5 h-5" />
-                )}
-              </Button>
-            </div>
+              }}
+              placeholder="Type your message..."
+              className="flex-1"
+              disabled={isStreaming}
+            />
+            <Button
+              onClick={sendMessage}
+              disabled={!input.trim() || isStreaming}
+              size="icon"
+            >
+              <Send className="w-4 h-4" />
+            </Button>
           </div>
         </div>
-
       </div>
     </div>
   );

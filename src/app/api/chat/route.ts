@@ -3,8 +3,7 @@ import prisma from '@/lib/prisma';
 import { $Enums } from '@prisma/client';
 import { genAI } from '@/lib/GeminiClient';
 
-
-const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-lite' });
 
 export async function POST(req: NextRequest) {
   try {
@@ -59,6 +58,7 @@ Response:`;
           }
           controller.close();
         } catch (error) {
+          console.error('Error in stream processing:', error);
           controller.error(error);
         }
       },
@@ -86,9 +86,6 @@ Response:`;
   }
 }
 
-
-
-
 export async function GET(req: NextRequest) {
   try {
     const chatmsg = req.nextUrl.searchParams.get('chatmsg');
@@ -104,31 +101,31 @@ export async function GET(req: NextRequest) {
     const session = await prisma.session.findUnique({
       where: { id: sessionId },
       include: {
-        chats: true, 
+        chats: true,
       },
     });
 
     if (!session) {
       return NextResponse.json({ error: 'Session not found' }, { status: 404 });
     }
-    console.log("sender",sender)
+    // console.log('sender', sender);
 
     const chat = await prisma.chat.create({
       data: {
         sessionId: sessionId,
-        sender: (sender as $Enums.SenderType),
+        sender: sender as $Enums.SenderType,
         message: chatmsg,
       },
     });
 
-    return NextResponse.json(
-      { success: true, chat, session },
-      { status: 200 }
-    );
+    return NextResponse.json({ success: true, chat, session }, { status: 200 });
   } catch (error) {
-    console.error("Error handling GET request:", error);
+    console.error('Error handling GET request:', error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'An unknown error occurred' },
+      {
+        error:
+          error instanceof Error ? error.message : 'An unknown error occurred',
+      },
       { status: 500 }
     );
   }

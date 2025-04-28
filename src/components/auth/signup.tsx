@@ -1,129 +1,97 @@
-// import EmailSignUp from '@/app/auth/signup/_components/EmailSignUp';
-// import { TopLeftShine, TopRightShine } from "../ui/Shine";
-// import SignupButtons from "../SignUpButtons";
-
-// export default function SignUp() {
-//   return (
-//     <div className="flex min-h-screen bg-black md:grid md:grid-cols-5 md:px-0">
-//     {/* Left Side - SignUp Form (40% width) */}
-//     <div className="md:col-span-2 flex flex-col justify-center p-6 md:p-12 space-y-6 max-w-[450px] mx-auto bg-black">
-//       <div className="absolute top-0 left-0 flex justify-start w-screen overflow-hidden pointer-events-none">
-//         <TopLeftShine />
-//       </div>
-
-//       <div className="flex flex-col items-center text-start space-y-2">
-//         <h1 className="text-2xl font-semibold text-white">
-//           Create an account
-//         </h1>
-//         <p className="text-sm text-[#8F8F8F]">
-//           Enter your email below to create your account
-//         </p>
-//       </div>
-
-//       {/* <SignupButtons/> */}
-
-//       {/* <div className="relative">
-//         <div className="absolute inset-0 flex items-center">
-//           <span className="w-full border-t border-[#8F8F8F]" />
-//         </div>
-//         <div className="relative flex justify-center text-xs uppercase">
-//           <span className="bg-black px-2  text-[#8F8F8F]">
-//             Or continue with
-//           </span>
-//         </div>
-//       </div> */}
-
-//       {/* Form */}
-//       <div className="space-y-6 bg-black">
-//         <div className="space-y-4">
-//           <EmailSignUp />
-//         </div>
-//       </div>
-//     </div>
-
-//     {/* Right Side - Background Image and Quote (60% width) */}
-//     <div className="relative hidden md:inline h-full bg-muted text-white lg:flex flex-col p-10 md:col-span-3">
-//       <div className="absolute inset-0 bg-zinc-900 opacity-60" />
-//       <div className="relative z-20 flex items-center text-lg font-medium">
-//         <div className="mr-2 h-6 w-6" />
-//         Elytra Inc
-//       </div>
-//       <div className="relative z-20 mt-auto">
-//         <blockquote className="space-y-2">
-//           <p className="text-lg">
-//             &ldquo;This platform has saved me countless hours of work and helped me deliver stunning designs to my clients faster than ever before.&rdquo;
-//           </p>
-//           <footer className="text-sm">Sofia Davis</footer>
-//         </blockquote>
-//       </div>
-//     </div>
-//   </div>
-
-//   );
-// }
+'use client';
 
 import EmailSignUp from '@/app/auth/signup/_components/EmailSignUp';
-import { TopLeftShine, TopRightShine } from '../ui/Shine';
-import SignupButtons from '../SignUpButtons';
-import Image from 'next/image';
+import { motion } from 'framer-motion';
+import { Brain, Sparkles } from 'lucide-react';
+import Link from 'next/link';
 
 export default function SignUp() {
   return (
-    <div className="flex min-h-screen bg-black md:grid md:grid-cols-5 md:px-0">
-      {/* Left Side - SignUp Form (40% width) */}
-      <div className="md:col-span-2 flex flex-col justify-center p-6 md:p-12 space-y-6 max-w-[450px] mx-auto bg-black">
-        <div className="absolute top-0 left-0 flex justify-start w-screen overflow-hidden pointer-events-none">
-          <TopLeftShine />
-        </div>
-
-        <div className="flex flex-col items-center text-start space-y-2">
-          <h1 className="text-2xl font-semibold text-white">
-            Create an account
-          </h1>
-          <p className="text-sm text-[#8F8F8F]">
-            Enter your email below to create your account
-          </p>
-        </div>
-
-        {/* Form */}
-        <div className="space-y-6 bg-black">
-          <div className="space-y-4">
-            <EmailSignUp />
-          </div>
-        </div>
+    <div className="min-h-screen bg-gradient-to-b from-black via-purple-900/20 to-black text-white overflow-hidden">
+      {/* Animated Background */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -left-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob" />
+        <div className="absolute -bottom-40 -right-40 w-80 h-80 bg-indigo-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000" />
+        <div className="absolute top-0 left-1/2 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000" />
       </div>
 
-      {/* Right Side - Background with Images and Quote */}
-      <div className="relative hidden md:inline h-full bg-muted text-white lg:flex flex-col p-10 md:col-span-3">
-        <div className="absolute inset-0 bg-zinc-900 opacity-60" />
-        <div className="relative z-20 flex items-center text-lg font-medium">
-          <div className="mr-2 h-6 w-6" />
-          Elytra Inc
-        </div>
-
-        {/* Image Container */}
-        <div className="relative z-20 mt-auto flex space-x-6 justify-center items-center">
-          <div className=" flex justify-center">
-            <Image
-              src="/prog-recommend.png"
-              alt="Programmer Recommendation"
-              width={300}
-              height={300}
-              className="rounded-lg shadow-lg object-contain w-full h-auto"
-            />
+      {/* Header */}
+      <header className="container mx-auto px-4 py-6 flex justify-between items-center relative z-10">
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="flex items-center space-x-2"
+        >
+          <div className="relative">
+            <Brain className="h-8 w-8 text-purple-500 animate-pulse" />
+            <Sparkles className="absolute -top-1 -right-1 h-4 w-4 text-yellow-400 animate-spin" />
           </div>
-        </div>
+          <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
+            Elytra
+          </span>
+        </motion.div>
+        <nav className="flex items-center space-x-6">
+          <Link
+            href="/auth/signin"
+            className="text-gray-300 hover:text-white transition-colors"
+          >
+            Sign In
+          </Link>
+        </nav>
+      </header>
 
-        {/* Quote */}
-        <div className="relative z-20 mt-6">
-          <blockquote className="space-y-2 text-center">
-            <p className="text-lg">
-              &ldquo;This platform has saved me countless hours of work and
-              helped me deliver stunning designs to my clients faster than ever
-              before.&rdquo;
-            </p>
-            <footer className="text-sm">Sofia Davis</footer>
-          </blockquote>
+      <div className="flex min-h-[calc(100vh-80px)] items-center justify-center px-4">
+        <div className="w-full max-w-md">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="bg-gray-800/50 backdrop-blur-sm p-8 rounded-2xl shadow-xl"
+          >
+            <div className="text-center mb-8">
+              <motion.h1
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="text-3xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600"
+              >
+                Create an Account
+              </motion.h1>
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="text-gray-400"
+              >
+                Join Elytra and start your journey with AI counseling
+              </motion.p>
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+            >
+              <EmailSignUp />
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
+              className="mt-6 text-center"
+            >
+              <p className="text-sm text-gray-400">
+                Already have an account?{' '}
+                <Link
+                  href="/auth/signin"
+                  className="text-purple-400 hover:text-purple-300 transition-colors"
+                >
+                  Sign in
+                </Link>
+              </p>
+            </motion.div>
+          </motion.div>
         </div>
       </div>
     </div>
