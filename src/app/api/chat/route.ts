@@ -108,7 +108,7 @@ export async function GET(req: NextRequest) {
     if (!session) {
       return NextResponse.json({ error: 'Session not found' }, { status: 404 });
     }
-    console.log('sender', sender);
+    // console.log('sender', sender);
 
     const chat = await prisma.chat.create({
       data: {

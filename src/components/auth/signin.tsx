@@ -1,61 +1,97 @@
-import SignupButtons from '../SignUpButtons';
-import { TopLeftShine, TopRightShine } from '../ui/Shine';
+'use client';
+
 import EmailSignIn from '@/app/auth/signin/_components/EmailSignIn';
-import Image from 'next/image';
+import { motion } from 'framer-motion';
+import { Brain, Sparkles } from 'lucide-react';
+import Link from 'next/link';
 
 export default function SignIn() {
   return (
-    <div className="flex min-h-screen bg-black md:grid md:grid-cols-5 md:px-0">
-      {/* Left Side - Sign In Form */}
-      <div className="md:col-span-2 flex flex-col justify-center p-6 md:p-12 mx-auto bg-black ">
-        <div className="absolute top-0 left-0 flex justify-start w-screen overflow-hidden pointer-events-none">
-          <TopLeftShine />
-        </div>
-
-        <div className="flex flex-col items-center text-start space-y-2 m-2">
-          <h1 className="text-2xl font-semibold text-[#807F7F] dark:text-white">
-            Sign In to your account
-          </h1>
-          <p className="text-sm text-[#8F8F8F]">
-            Enter your email and password to Sign In
-          </p>
-        </div>
-
-        <div className="space-y-6 bg-black">
-          <div className="space-y-4">
-            <EmailSignIn />
-          </div>
-        </div>
+    <div className="min-h-screen bg-gradient-to-b from-black via-purple-900/20 to-black text-white overflow-hidden">
+      {/* Animated Background */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -left-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob" />
+        <div className="absolute -bottom-40 -right-40 w-80 h-80 bg-indigo-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000" />
+        <div className="absolute top-0 left-1/2 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000" />
       </div>
 
-      {/* Right Side - Background Image and Quote (60% width) */}
-      <div className="relative hidden md:inline h-full bg-muted text-white lg:flex flex-col p-10 md:col-span-3">
-        <div className="absolute inset-0 bg-zinc-900 opacity-60" />
-        <div className="relative z-20 flex items-center text-lg font-medium">
-          <div className="mr-2 h-6 w-6" />
-          Elytra Inc
-        </div>
-        {/* Image Container */}
-        <div className="relative z-20 mt-auto flex space-x-6 justify-center items-center">
-          <div className=" flex justify-center">
-            <Image
-              src="/human.png"
-              alt="Programmer Recommendation"
-              width={300}
-              height={300}
-              className="rounded-lg shadow-lg object-contain w-full h-auto"
-            />
+      {/* Header */}
+      <header className="container mx-auto px-4 py-6 flex justify-between items-center relative z-10">
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="flex items-center space-x-2"
+        >
+          <div className="relative">
+            <Brain className="h-8 w-8 text-purple-500 animate-pulse" />
+            <Sparkles className="absolute -top-1 -right-1 h-4 w-4 text-yellow-400 animate-spin" />
           </div>
-        </div>
-        <div className="relative z-20 mt-auto">
-          <blockquote className="space-y-2">
-            <p className="text-lg">
-              &ldquo;This platform has saved me countless hours of work and
-              helped me deliver stunning designs to my clients faster than ever
-              before.&rdquo;
-            </p>
-            <footer className="text-sm">Sofia Davis</footer>
-          </blockquote>
+          <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
+            Elytra
+          </span>
+        </motion.div>
+        <nav className="flex items-center space-x-6">
+          <Link
+            href="/auth/signup"
+            className="text-gray-300 hover:text-white transition-colors"
+          >
+            Sign Up
+          </Link>
+        </nav>
+      </header>
+
+      <div className="flex min-h-[calc(100vh-80px)] items-center justify-center px-4">
+        <div className="w-full max-w-md">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="bg-gray-800/50 backdrop-blur-sm p-8 rounded-2xl shadow-xl"
+          >
+            <div className="text-center mb-8">
+              <motion.h1
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="text-3xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600"
+              >
+                Welcome Back
+              </motion.h1>
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="text-gray-400"
+              >
+                Sign in to continue your journey with AI counseling
+              </motion.p>
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+            >
+              <EmailSignIn />
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
+              className="mt-6 text-center"
+            >
+              <p className="text-sm text-gray-400">
+                Don't have an account?{' '}
+                <Link
+                  href="/auth/signup"
+                  className="text-purple-400 hover:text-purple-300 transition-colors"
+                >
+                  Sign up
+                </Link>
+              </p>
+            </motion.div>
+          </motion.div>
         </div>
       </div>
     </div>

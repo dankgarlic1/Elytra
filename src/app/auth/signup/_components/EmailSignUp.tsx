@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { toast, Toaster } from 'sonner';
-import { GithubIcon, GoogleIcon } from "@/icons/icons";
-import Link from "next/link";
+import { GithubIcon, GoogleIcon } from '@/icons/icons';
+import Link from 'next/link';
 // import { GitHubIcon, GoogleIcon } from '@/components/ui/icons'; // Icons component for GitHub & Google
 
 const EmailSignUp = () => {
@@ -23,7 +23,7 @@ const EmailSignUp = () => {
     setError('');
     setLoading(true);
     try {
-      const result = await signIn("credentials", {
+      const result = await signIn('credentials', {
         redirect: false,
         email,
         password,
@@ -34,7 +34,7 @@ const EmailSignUp = () => {
       setLoading(false);
 
       if (result?.error) {
-        setError(result.error); 
+        setError(result.error);
         console.log('Error during sign in:', result.error);
         toast.error(result.error);
       } else {
@@ -54,7 +54,10 @@ const EmailSignUp = () => {
 
   return (
     <>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-[#8F8F8F] font-sans">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-4 text-[#8F8F8F] font-sans"
+      >
         {/* Name Input */}
         <Input
           id="name"
@@ -63,7 +66,7 @@ const EmailSignUp = () => {
           placeholder="Enter your name"
           required
           value={name}
-          style={{borderRadius: '0.6rem'}}
+          style={{ borderRadius: '0.6rem' }}
           onChange={(e) => setName(e.target.value)}
           className="rounded-lg border border-[#323232] bg-black placeholder:text-[#8F8F8F]  px-4 py-5 text-base w-full ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2"
         />
@@ -76,7 +79,7 @@ const EmailSignUp = () => {
           placeholder="Enter your email"
           required
           value={email}
-          style={{borderRadius: '0.6rem'}}
+          style={{ borderRadius: '0.6rem' }}
           onChange={(e) => setEmail(e.target.value)}
           className="rounded-lg border border-[#323232] bg-black placeholder:text-[#888888] px-4 py-5 text-base w-full ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2"
         />
@@ -85,7 +88,7 @@ const EmailSignUp = () => {
         <Input
           id="password"
           name="password"
-          style={{borderRadius: '0.6rem'}}
+          style={{ borderRadius: '0.6rem' }}
           type="password"
           placeholder="Enter your password"
           required
@@ -99,19 +102,25 @@ const EmailSignUp = () => {
           type="submit"
           className="flex items-center font-semibold justify-center border border-[#323232] bg-white text-black hover:bg-black hover:text-white transition-all  rounded-md h-[2.5rem]"
           disabled={loading}
-          style={{borderRadius:"0.6rem"}}
+          style={{ borderRadius: '0.6rem' }}
         >
           {loading ? 'Signing Up...' : 'Sign Up'}
         </Button>
 
-        <p className="mt-2 text-center text-sm text-[#8F8F8F]">
+        {/* <p className="mt-2 text-center text-sm text-[#8F8F8F]">
           Already have an Account?{" "} <Link href="/auth/signin" className="underline"> SignIn</Link> here
-          </p>
+          </p> */}
 
         <p className="mt-4 text-center text-sm text-[#8F8F8F]">
-          By clicking continue, you agree to our{" "}
-          <a href="/terms" className="underline hover:text-primary">Terms of Service</a> and{" "}
-          <a href="/privacy" className="underline hover:text-primary">Privacy Policy</a>.
+          By clicking continue, you agree to our{' '}
+          <a href="/terms" className="underline hover:text-primary">
+            Terms of Service
+          </a>{' '}
+          and{' '}
+          <a href="/privacy" className="underline hover:text-primary">
+            Privacy Policy
+          </a>
+          .
         </p>
 
         <Toaster />
